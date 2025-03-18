@@ -1,44 +1,45 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid'
-const userSchema = new mongoose.Schema({
+import { v4 as uuidv4 } from 'uuid';
 
+const userSchema = new mongoose.Schema({
     userId: {
         type: String,
-        default: () => uuidv4(),  // Automatically generate UUID for each new user
-        unique: true,
+        default: () => uuidv4(),
+        unique: true,  // Ensure that userId is unique
     },
     userName: {
-        require : true,
+        required: true,
         type: String,
-        unique: true,
+        unique: true,  // Ensure that userName is unique
     },
     email: {
-        require : true,
+        required: true,
         type: String,
-        unique: true,
+        unique: true,  // Ensure that email is unique
     },
     password: {
-        require : true,
+        required: true,
         type: String,
     },
     phone: {
         type: String,
-        unique: true,
         default: null,
     },
     dob: {
         type: String,
-        unique: true,
         default: null,
     },
-    isAdmin:{
+    isAdmin: {
         type: Boolean,
-        default: false
+        default: false,
     },
-    isBlocked:{
+    isBlocked: {
         type: Boolean,
-        default: false
+        default: false,
     }
-},{timestamps: true});
+}, { timestamps: true });
 
-export const User = mongoose.model('User',userSchema)
+// Create a unique index for phone if you want to enforce uniqueness for phone as well
+userSchema.index({ phone: 1 }, { unique: true, partialFilterExpression: { phone: { $exists: true, $ne: null } } });
+
+export const User = mongoose.model('User', userSchema);
