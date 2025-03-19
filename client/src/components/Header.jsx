@@ -28,6 +28,7 @@ const Header = () => {
                       src={currentUser.profilePicture || 'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg'}
                       alt='profile'
                       className='h-7 w-7 rounded-full object-cover'
+                      onError={(e) => e.target.src = 'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg'} // Fallback on error
                     />
                   </Link>
                 ) : (
