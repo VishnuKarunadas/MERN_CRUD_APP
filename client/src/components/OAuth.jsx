@@ -17,6 +17,8 @@ const OAuth = () => {
             console.log('Google login result:', result)
 
             const res = await fetch('/server/auth/google', {
+
+                
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
