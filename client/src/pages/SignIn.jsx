@@ -1,11 +1,28 @@
 import React, { useState } from 'react'
-import {Link, useNavigate} from 'react-router-dom'
+import {data, Link, useNavigate} from 'react-router-dom'
+import { signInFailure, signInStart, signInSuccess } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+
+
+
+
+
 const SignIn = () => {
   const [formData,setFormData] = useState({});
-  const [error,setError]= useState(false);
+  // const [error,setError]= useState(false);
   const [errorMessage,setErrorMessage]= useState(null);
-  const [loading,setLoading] = useState(false)
+  // const [loading,setLoading] = useState(false)
+
+  const {loading,error} = useSelector((state)=> state.user);
+
+
+
+
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+
+
   const handleChange =(e)=>{
     setFormData({...formData, [e.target.id]: e.target.value})
   }
@@ -14,7 +31,10 @@ const SignIn = () => {
     e.preventDefault();
   
     try {
-      setLoading(true)
+
+      dispatch(signInStart());
+
+      // setLoading(true)
       const res = await fetch('/server/auth/signin', {
         method: 'POST',
         headers: {
@@ -26,19 +46,22 @@ const SignIn = () => {
 
       if (!res.ok) {
         const responseData = await res.json();
+        dispatch(signInFailure(responseData.message))
         throw new Error(responseData.message || "An Error Occured");
       }
       const responseData = await res.json();
-      setLoading(true)
-      setError(false)
+      // setLoading(true)
+      dispatch(signInSuccess(responseData))
+      // setError(false)
       console.log(responseData);
 
       // navigate to home page
       navigate('/')
       
     } catch (error) {
-      setLoading(false);
-      setError(true);
+      // setLoading(false);
+      // setError(true);
+      dispatch(signInFailure(error))
 
       if (error.response) {
         // Error object from fetch with response
