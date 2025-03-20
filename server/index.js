@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import userRouter from './routes/userRoute.js';
 import authRouter from './routes/authRoute.js';
-
+import adminRouter from './routes/adminRoute.js';
 
 dotenv.config();
 
@@ -25,6 +25,7 @@ mongoose.connect(process.env.MONGODB_URI).then(()=>{
 
 app.use('/server/user',userRouter);
 app.use('/server/auth',authRouter);
+app.use("/server/admin",adminRouter)
 //middleware-to handle error
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;
