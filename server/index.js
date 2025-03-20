@@ -2,6 +2,7 @@ import express from "express";
 import cors from 'cors';
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import userRouter from './routes/userRoute.js';
 import authRouter from './routes/authRoute.js';
 
@@ -10,6 +11,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors());
 // console.log(process.env.MONGODB_URI);
 
