@@ -23,7 +23,7 @@ const { currentUser } = useSelector((state) => state.user);
   };
 
   return (
-    <div className="bg-blend-color min-h-screen p-4">
+    <div className="bg-[url('/Aesthetic-Black-Wallpaper-4K-Background.jpg')] bg-cover bg-center min-h-screen p-4">
       <div className="max-w-xl mx-auto bg-white p-4 rounded-lg shadow-lg">
         <div className="flex items-center mb-4">
           <img

@@ -1,9 +1,21 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
+import  { signOut } from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
 export default function AdminHeader() {
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-
+    const handleSignOut = async () => {
+      try {
+        await fetch('/server/auth/signout');
+        console.log('sign-out-Admin');
+        
+        dispatch(signOut());
+        navigate('/sign-in');
+      } catch (error) {
+        console.log(error);
+      }
+    };
   return (
     <div className='bg-slate-200'>
       <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
@@ -27,6 +39,7 @@ export default function AdminHeader() {
               <li>Sign In</li>
             </Link>
           )}
+          <button className='font-bold' onClick={handleSignOut}> signOut</button>
         </ul>
       </div>
     </div>

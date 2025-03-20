@@ -8,7 +8,7 @@ const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
 
   return (
-    <div className=" bg-green-200 shadow-md">
+    <div className=" bg-black shadow-md">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-4">
         <Link to={'/'} className="flex items-center space-x-2">
           <img
@@ -16,11 +16,11 @@ const Header = () => {
             src="/enteGraam_log.png" // Ensure correct path for the image
             className="w-20"
           />
-          <h1 className="font-bold text-2xl text-gray-800">EnteGraam</h1>
+          <h1 className="font-bold text-2xl text-amber-50">EnteGraam</h1>
         </Link>
 
         {/* Search Bar */}
-        <div className="flex items-center border border-gray-300 rounded-full p-2 w-1/3">
+        <div className="bg-amber-50 flex items-center border border-gray-300 rounded-full p-2 w-1/3">
           <input
             type="text"
             placeholder="Search"

@@ -11,6 +11,7 @@ import {
   deleteUserFailure,
   signOut,
 } from '../redux/user/userSlice';
+import Popup from './Popup';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -23,6 +24,28 @@ export default function Profile() {
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const { currentUser, loading, error } = useSelector((state) => state.user);
+
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState('');
+
+  // Trigger the popup for success or error message
+ useEffect(() => {
+    if (updateSuccess) {
+      setPopupMessage('User is updated successfully!');
+      setPopupType('success');
+      setShowPopup(true);
+    } else if (error) {
+      setPopupMessage('Something went wrong!');
+      setPopupType('error');
+      setShowPopup(true);
+    }
+  }, [updateSuccess, error]);
+
+  const handlePopupClose = () => {
+    setShowPopup(false); // Close the popup
+  };
 
   
   useEffect(() => {
@@ -40,12 +63,11 @@ export default function Profile() {
   const handleFileUpload = async (image) => {
     const formData = new FormData();
     formData.append('file', image);
-    // formData.append('upload_preset', import.meta.env.VITE_CLOUD_PRESET);
-    formData.append('upload_preset', 'mern_auth' );
+    formData.append('upload_preset', import.meta.env.VITE_CLOUD_PRESET);
     try {
       setImagePercent(30);
-      // const cloudName = import.meta.env.VITE_CLOUD_NAME;
-      const cloudName = "dvzgvpx12" ;
+      const cloudName = import.meta.env.VITE_CLOUD_NAME;
+
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         {
@@ -125,90 +147,91 @@ export default function Profile() {
   };
 
   return (
-    <div className='p-3 max-w-lg mx-auto'>
-      <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
+    <div className="p-20 mt-20 max-w-lg mx-auto bg-gray-100">
+      <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
       {currentUser && (
-        <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <input
-  type='file'
-  ref={fileRef}
-  hidden
-  accept='image/*'
-  onChange={(e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        setImageError(true);
-        return;
-      }
-      if (file.size > 2 * 1024 * 1024) {
-        setImageError(true);
-        return;
-      }
-      setImageError(false);
-      setImage(file);
-    }
-  }}
-/>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="file"
+            ref={fileRef}
+            hidden
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                if (!file.type.startsWith("image/")) {
+                  setImageError(true);
+                  return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                  setImageError(true);
+                  return;
+                }
+                setImageError(false);
+                setImage(file);
+              }
+            }}
+          />
           <img
             src={formData.profilePicture || currentUser.profilePicture || 'https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg'}
-            alt='profile'
-            className='h-24 w-24 self-center cursor-pointer rounded-full object-cover mt-2'
+            alt="profile"
+            className="h-24 w-24 self-center cursor-pointer rounded-full object-cover mt-2"
             onClick={() => fileRef.current.click()}
           />
-          <p className='text-sm self-center'>
+          <p className="text-sm self-center">
             {imageError ? (
-              <span className='text-red-700'>
-                Error uploading image (file size must be less than 2 MB)
-              </span>
+              <span className="text-red-700">Error uploading image (file size must be less than 2 MB)</span>
             ) : imagePercent > 0 && imagePercent < 100 ? (
-              <span className='text-slate-700'>{`Uploading: ${imagePercent} %`}</span>
+              <span className="text-slate-700">{`Uploading: ${imagePercent} %`}</span>
             ) : imagePercent === 100 ? (
-              <span className='text-green-700'>Image uploaded successfully</span>
+              <span className="text-green-700">Image uploaded successfully</span>
             ) : (
               ''
             )}
           </p>
           <input
-            defaultValue={currentUser.username}
-            type='text'
-            id='username'
-            placeholder='Username'
-            className='bg-slate-100 rounded-lg p-3'
+            defaultValue={currentUser.userName}
+            type="text"
+            id="username"
+            placeholder="Username"
+            className="bg-slate-300 rounded-lg p-3"
             onChange={handleChange}
           />
           <input
             defaultValue={currentUser.email}
-            type='email'
-            id='email'
-            placeholder='Email'
-            className='bg-slate-100 rounded-lg p-3'
+            type="email"
+            id="email"
+            placeholder="Email"
+            className="bg-slate-300 rounded-lg p-3"
             onChange={handleChange}
           />
           <input
-            type='password'
-            id='password'
-            placeholder='Password'
-            className='bg-slate-100 rounded-lg p-3'
+            type="password"
+            id="password"
+            placeholder="Password"
+            className="bg-slate-300 rounded-lg p-3"
             onChange={handleChange}
           />
-          <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>
+          <button className="bg-black text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
             {loading ? 'Loading...' : 'Update'}
           </button>
         </form>
       )}
-      <div className='flex justify-between mt-5'>
-        <span onClick={handleDeleteAccount} className='text-red-700 cursor-pointer'>
+      <div className="flex justify-between mt-5">
+        <button onClick={handleDeleteAccount} className="p-1 rounded-lg uppercase hover:opacity-95 disabled:opacity-80 cursor-pointer bg-red-400">
           Delete Account
-        </span>
-        <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>
-          Sign out
+        </button>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
+          Log out
         </span>
       </div>
-      <p className='text-red-700 mt-5'>{error && 'Something went wrong!'}</p>
-      <p className='text-green-700 mt-5'>
-        {updateSuccess && 'User is updated successfully!'}
-      </p>
+      <p className="text-red-700 mt-5">{error && 'Something went wrong!'}</p>
+      <p className="text-green-700 mt-5">{updateSuccess && 'User is updated successfully!'}</p>
+
+      {/* Popup Modal */}
+      {showPopup && (
+        <Popup message={popupMessage} onClose={handlePopupClose} type={popupType} />
+      )}
     </div>
   );
-}
+};
